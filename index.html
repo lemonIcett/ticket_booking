@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Train Ticket Booking System - DSA Visualization</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-train"></i>
+                <h1>TrainTicket<span>Pro</span></h1>
+            </div>
+            <p class="subtitle">DSA-Powered Booking System</p>
+        </header>
+
+        <!-- Data Structures Info Panel -->
+        <div class="info-panel">
+            <h3><i class="fas fa-info-circle"></i> Data Structures in Use</h3>
+            <div class="ds-grid">
+                <div class="ds-card" data-ds="array">
+                    <i class="fas fa-th"></i>
+                    <span>Array</span>
+                    <small>Seat Management</small>
+                </div>
+                <div class="ds-card" data-ds="linkedlist">
+                    <i class="fas fa-link"></i>
+                    <span>LinkedList</span>
+                    <small>Waiting List</small>
+                </div>
+                <div class="ds-card" data-ds="hashmap">
+                    <i class="fas fa-hashtag"></i>
+                    <span>HashMap</span>
+                    <small>Fast Lookup</small>
+                </div>
+                <div class="ds-card" data-ds="stack">
+                    <i class="fas fa-layer-group"></i>
+                    <span>Stack</span>
+                    <small>Undo Cancel</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left Panel: Controls -->
+            <div class="control-panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-cogs"></i> Booking Operations</h2>
+                </div>
+
+                <!-- Book Ticket Form -->
+                <div class="form-section">
+                    <h3><i class="fas fa-ticket-alt"></i> Book Ticket</h3>
+                    <form id="bookingForm">
+                        <div class="input-group">
+                            <label for="passengerName">Passenger Name</label>
+                            <input type="text" id="passengerName" placeholder="Enter name" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="passengerAge">Age</label>
+                            <input type="number" id="passengerAge" placeholder="Enter age" min="1" max="120" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Book Ticket
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Search & Cancel -->
+                <div class="form-section">
+                    <h3><i class="fas fa-search"></i> Search Booking</h3>
+                    <div class="input-group">
+                        <input type="number" id="searchTicketId" placeholder="Enter Ticket ID">
+                        <button onclick="searchBooking()" class="btn btn-secondary">
+                            <i class="fas fa-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3><i class="fas fa-times-circle"></i> Cancel Ticket</h3>
+                    <div class="input-group">
+                        <input type="number" id="cancelTicketId" placeholder="Enter Ticket ID">
+                        <button onclick="cancelTicket()" class="btn btn-danger">
+                            <i class="fas fa-trash"></i> Cancel
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Undo -->
+                <div class="form-section">
+                    <button onclick="undoCancellation()" class="btn btn-warning" id="undoBtn" disabled>
+                        <i class="fas fa-undo"></i> Undo Last Cancellation
+                        <span class="stack-count" id="stackCount">0</span>
+                    </button>
+                </div>
+
+                <!-- Data Persistence -->
+                <div class="form-section persistence">
+                    <h3><i class="fas fa-database"></i> Data Persistence</h3>
+                    <div class="btn-group">
+                        <button onclick="saveToFile()" class="btn btn-info">
+                            <i class="fas fa-save"></i> Save Data
+                        </button>
+                        <button onclick="loadFromFile()" class="btn btn-success">
+                            <i class="fas fa-upload"></i> Load Data
+                        </button>
+                        <button onclick="clearAllData()" class="btn btn-outline-danger">
+                            <i class="fas fa-trash-alt"></i> Clear All
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Visualizations -->
+            <div class="visualization-panel">
+                <!-- Seat Layout -->
+                <div class="viz-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-th"></i> Seat Layout (Array)</h3>
+                        <div class="legend">
+                            <span class="legend-item available"><i class="fas fa-square"></i> Available</span>
+                            <span class="legend-item booked"><i class="fas fa-square"></i> Booked</span>
+                        </div>
+                    </div>
+                    <div class="seat-grid" id="seatGrid">
+                        <!-- Seats generated by JS -->
+                    </div>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <span class="stat-value" id="availableSeats">20</span>
+                            <span class="stat-label">Available</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="bookedSeats">0</span>
+                            <span class="stat-label">Booked</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="totalSeats">20</span>
+                            <span class="stat-label">Total</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Waiting List Visualization -->
+                <div class="viz-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-link"></i> Waiting List (LinkedList)</h3>
+                        <span class="badge" id="waitingCount">0</span>
+                    </div>
+                    <div class="linkedlist-viz" id="waitingListViz">
+                        <div class="empty-state">
+                            <i class="fas fa-users"></i>
+                            <p>No passengers in waiting list</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Booking HashMap -->
+                <div class="viz-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-hashtag"></i> Active Bookings (HashMap)</h3>
+                        <span class="badge" id="bookingCount">0</span>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table" id="bookingsTable">
+                            <thead>
+                                <tr>
+                                    <th>Ticket ID</th>
+                                    <th>Passenger</th>
+                                    <th>Age</th>
+                                    <th>Seat</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bookingsTableBody">
+                                <tr class="empty-row">
+                                    <td colspan="6">No bookings yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Cancel Stack -->
+                <div class="viz-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-layer-group"></i> Cancellation Stack (LIFO)</h3>
+                        <span class="badge" id="cancelStackCount">0</span>
+                    </div>
+                    <div class="stack-viz" id="cancelStackViz">
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>Stack is empty</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification Toast -->
+        <div class="toast-container" id="toastContainer"></div>
+
+        <!-- Modal for Search Results -->
+        <div class="modal" id="searchModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3><i class="fas fa-search"></i> Search Result</h3>
+                    <button class="close-btn" onclick="closeModal()">&times;</button>
+                </div>
+                <div class="modal-body" id="searchResultContent">
+                    <!-- Content populated by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
